@@ -13,9 +13,16 @@ const initialContacts = [
 ]
 
 export default function App() {
-  const [contacts, setContacts] = (initialContacts);
+  const [contacts, setContacts] = useState(() => {
+    return JSON.parse(window.localStorage.getItem('contacts')) ?? initialContacts;
+  });
+    
   const [filter, setFilter] = useState('');
 
+  useEffect(() => {
+    window.localStorage.setItem('contacts', JSON.stringify(contacts));
+  }, [contacts]);
+  
   const addContact = (name, number) => {
     const contact = {
       id: uuidv4(),
@@ -24,16 +31,14 @@ export default function App() {
     };
     
     if (contacts.map(contact => contact.name).includes(name)) {
-      setContacts(({ contacts }) => ({
-      contacts: [contact, ...contacts],
-    }));
+      setContacts(prevState => [contact, ...prevState]);
     } else {
-      alert(`${name} is already in contacs.`)
+      alert(`${name} is already in contacs!`)
     }
   };
 
-  const  changeFilter = event => {
-    setFilter(event.currentTarget.value);
+  const  changeFilter = filter => {
+    setFilter(filter);
   };
 
   const  getVisibleContacts = () => {
@@ -44,20 +49,11 @@ export default function App() {
     );
   };
 
-  const  deleteContact = contactId => {
-    setContacts(state => ({
-      contacts: state.contacts.filter(contact => contact.id !== contactId),
-    }));
+  // const visibleContacts = getVisibleContacts();
+
+  const deleteContact = contactId => {
+    setContacts(contacts.filter(contact => contact.id !== contactId));
   };
-
-  useEffect(() => {
-    const contacts = localStorage.getItem('contacts');
-    const parselContacts = JSON.parse(contacts);
-
-    setContacts({ contacts: parselContacts });
-
-    localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts, setContacts]);
 
   return (
       <Container>
@@ -74,7 +70,7 @@ export default function App() {
           />
 
         <Contacts
-          contacts={getVisibleContacts}
+          contacts={getVisibleContacts()}
           onDeleteContact={deleteContact}
         />
         

@@ -31,7 +31,6 @@ export default function Form(onSubmit) {
         event.preventDefault();
 
         onSubmit(name, number);
-
         setName('');
         setNumber('');
     };
@@ -74,8 +73,8 @@ export default function Form(onSubmit) {
     }
 
 Form.propTypes = {
-    name: PropTypes.string.isRequired,
-    number: PropTypes.number.isRequired,
+    name: PropTypes.string,
+    number: PropTypes.number,
 };
 
 
