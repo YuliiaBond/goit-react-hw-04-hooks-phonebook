@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import PropTypes from 'prop-types';
 import style from './Form.module.css'
 
-export default function Form(onSubmit) {
+export default function Form({onSubmit}) {
     const [name, setName] = useState('');
     const [number, setNumber] = useState('');
     
     const nameInputId = uuidv4();
     const numberInpntId = uuidv4();
+    
 
     const handleChange = event => {
         const { name, value } = event.currentTarget;
@@ -30,6 +31,10 @@ export default function Form(onSubmit) {
     const hadleSubmit = event => {
         event.preventDefault();
 
+        if (!name || !number) {
+            return;
+        }
+
         onSubmit(name, number);
         setName('');
         setNumber('');
@@ -37,7 +42,7 @@ export default function Form(onSubmit) {
     
         return (
             <form className={style.form} onSubmit={hadleSubmit}>
-                <label className={style.label} htmlFor={nameInputId}>
+                <label className={style.label}>
                 Name
                 <input
                     className={style.input}
@@ -52,7 +57,7 @@ export default function Form(onSubmit) {
                 />
                 </label>
 
-                <label className={style.label} htmlFor={numberInpntId}>
+                <label className={style.label}>
                 Number
                 <input
                     className={style.input}
